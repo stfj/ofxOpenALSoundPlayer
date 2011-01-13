@@ -23,8 +23,8 @@
  ************************************************************************/ 
 
 
-#ifndef OFX_AL_SOUND_PLAYER_H
-#define OFX_AL_SOUND_PLAYER_H
+#ifndef OFX_OPEN_AL_SOUND_PLAYER_H
+#define OFX_OPEN_AL_SOUND_PLAYER_H
 
 /* convert your sounds to caf for them to work best:
  
@@ -53,15 +53,15 @@ struct multiPlaySource {
 	int buffer;
 };
 
-class ofxALSoundPlayer: public ofSoundPlayer
+class ofxOpenALSoundPlayer: public ofSoundPlayer
 {
 public:
 	
 	static void initializeSoundEngine();				
 	static void closeSoundEngine();	
 	
-	ofxALSoundPlayer();
-	~ofxALSoundPlayer();
+	ofxOpenALSoundPlayer();
+	~ofxOpenALSoundPlayer();
 	
 	void	loadSound(string fileName, bool stream=false);
 	void	unloadSound();

@@ -22,7 +22,7 @@
  
  ************************************************************************/ 
 
-#import "ofxALSoundPlayer.h"
+#import "ofxOpenALSoundPlayer.h"
 
 bool SoundEngineInitialized = false;
 
@@ -31,11 +31,11 @@ bool	mp3Loaded;
 
 
 ofMutex soundPlayerLock;
-vector<ofxALSoundPlayer *> soundPlayers;
+vector<ofxOpenALSoundPlayer *> soundPlayers;
 
 //--------------------------------------------------------------
 
-ofxALSoundPlayer::ofxALSoundPlayer() {
+ofxOpenALSoundPlayer::ofxOpenALSoundPlayer() {
 
 	volume = 1.0f;
 	pitch = 1.0f;
@@ -56,7 +56,7 @@ ofxALSoundPlayer::ofxALSoundPlayer() {
 
 //--------------------------------------------------------------
 
-ofxALSoundPlayer::~ofxALSoundPlayer() { 
+ofxOpenALSoundPlayer::~ofxOpenALSoundPlayer() { 
 	
 	unloadSound();
 	numSounds--;
@@ -80,10 +80,10 @@ ofxALSoundPlayer::~ofxALSoundPlayer() {
 
 //--------------------------------------------------------------
 
-void ofxALSoundPlayer::loadSound(string fileName, bool stream) {
+void ofxOpenALSoundPlayer::loadSound(string fileName, bool stream) {
 	
 	if(!SoundEngineInitialized) {
-		ofxALSoundPlayer::initializeSoundEngine();
+		ofxOpenALSoundPlayer::initializeSoundEngine();
 	}
 	
 	if( fileName.length()-3 == fileName.rfind("mp3") )
@@ -117,7 +117,7 @@ void ofxALSoundPlayer::loadSound(string fileName, bool stream) {
 
 //--------------------------------------------------------------
 
-void ofxALSoundPlayer::unloadSound() {
+void ofxOpenALSoundPlayer::unloadSound() {
 	if(bLoadedOk)
 	{
 		bLoadedOk=false;
@@ -130,7 +130,7 @@ void ofxALSoundPlayer::unloadSound() {
 
 //--------------------------------------------------------------
 
-void ofxALSoundPlayer::play() {
+void ofxOpenALSoundPlayer::play() {
 	if(iAmAnMp3)
 		SoundEngine_StartBackgroundMusic();
 	else
@@ -145,7 +145,7 @@ void ofxALSoundPlayer::play() {
 
 //--------------------------------------------------------------
 
-void ofxALSoundPlayer::stop() {
+void ofxOpenALSoundPlayer::stop() {
 
 	if(iAmAnMp3)
 		SoundEngine_StopBackgroundMusic(false);
@@ -157,7 +157,7 @@ void ofxALSoundPlayer::stop() {
 
 //--------------------------------------------------------------
 
-void ofxALSoundPlayer::setVolume(float _vol) {
+void ofxOpenALSoundPlayer::setVolume(float _vol) {
 	volume = _vol;
 	
 	if(iAmAnMp3)
@@ -168,7 +168,7 @@ void ofxALSoundPlayer::setVolume(float _vol) {
 
 //--------------------------------------------------------------
 
-void ofxALSoundPlayer::setPan(float _pan) {
+void ofxOpenALSoundPlayer::setPan(float _pan) {
 	if(iAmAnMp3)
 		cerr<<"error, cannot set pan on mp3s in openAL"<<endl;
 	else {
@@ -179,7 +179,7 @@ void ofxALSoundPlayer::setPan(float _pan) {
 
 //--------------------------------------------------------------
 
-void ofxALSoundPlayer::setPitch(float _pitch) {
+void ofxOpenALSoundPlayer::setPitch(float _pitch) {
 	if(iAmAnMp3)
 		cerr<<"error, cannot set pitch on mp3s in openAL"<<endl;
 	else {
@@ -190,7 +190,7 @@ void ofxALSoundPlayer::setPitch(float _pitch) {
 
 //--------------------------------------------------------------
 
-void ofxALSoundPlayer::setPaused(bool bP) {
+void ofxOpenALSoundPlayer::setPaused(bool bP) {
 	if(iAmAnMp3)
 		cerr<<"error, cannot set pause on mp3s in openAL"<<endl; // TODO
 	else {
@@ -206,7 +206,7 @@ void ofxALSoundPlayer::setPaused(bool bP) {
 
 //--------------------------------------------------------------
 
-void ofxALSoundPlayer::setLoop(bool bLp) {
+void ofxOpenALSoundPlayer::setLoop(bool bLp) {
 	bLoop = bLp;
 	
 	if(iAmAnMp3)
@@ -217,7 +217,7 @@ void ofxALSoundPlayer::setLoop(bool bLp) {
 
 //--------------------------------------------------------------
 
-void ofxALSoundPlayer::setMultiPlay(bool bMp) { 
+void ofxOpenALSoundPlayer::setMultiPlay(bool bMp) { 
 	if(iAmAnMp3)
 		cerr<<"error, cannot set multiplay on mp3s in openAL"<<endl;
 	else
@@ -226,7 +226,7 @@ void ofxALSoundPlayer::setMultiPlay(bool bMp) {
 
 //--------------------------------------------------------------
 
-void ofxALSoundPlayer::setPosition(float pct) {
+void ofxOpenALSoundPlayer::setPosition(float pct) {
 	if(iAmAnMp3)
 		cerr<<"error, cannot set position on mp3s in openAL"<<endl;
 	else
@@ -235,7 +235,7 @@ void ofxALSoundPlayer::setPosition(float pct) {
 
 //--------------------------------------------------------------
 
-float ofxALSoundPlayer::getPosition() {
+float ofxOpenALSoundPlayer::getPosition() {
 	if(iAmAnMp3)
 	{
 		cerr<<"error, cannot get position on mp3s in openAL"<<endl;
@@ -248,7 +248,7 @@ float ofxALSoundPlayer::getPosition() {
 
 //--------------------------------------------------------------
 
-bool ofxALSoundPlayer::getIsPlaying() {
+bool ofxOpenALSoundPlayer::getIsPlaying() {
 	if(iAmAnMp3)
 		stopped = SoundEngine_getBackgroundMusicStopped();
 	return !stopped || !bPaused;
@@ -256,13 +256,13 @@ bool ofxALSoundPlayer::getIsPlaying() {
 
 //--------------------------------------------------------------
 
-float ofxALSoundPlayer::getPitch() {
+float ofxOpenALSoundPlayer::getPitch() {
 	return pitch;
 }
 
 //--------------------------------------------------------------
 
-float ofxALSoundPlayer::getPan() {
+float ofxOpenALSoundPlayer::getPan() {
 	return pan;
 }
 
@@ -271,7 +271,7 @@ float ofxALSoundPlayer::getPan() {
 
 //static calls ---------------------------------------------------------------------------------------------------------------
 
-void ofxALSoundPlayer::initializeSoundEngine() {
+void ofxOpenALSoundPlayer::initializeSoundEngine() {
 	if(!SoundEngineInitialized){
 		
 		OSStatus err = SoundEngine_Initialize(44100);
@@ -292,7 +292,7 @@ void ofxALSoundPlayer::initializeSoundEngine() {
 
 //--------------------------------------------------------------
 
-void ofxALSoundPlayer::closeSoundEngine(){
+void ofxOpenALSoundPlayer::closeSoundEngine(){
 	if(SoundEngineInitialized){
 		
 		SoundEngine_Teardown();
@@ -321,7 +321,7 @@ float * ofxALSoundGetSpectrum(){
 
 void ofxALSoundSetVolume(float vol){
 	if(!SoundEngineInitialized)
-		ofxALSoundPlayer::initializeSoundEngine();
+		ofxOpenALSoundPlayer::initializeSoundEngine();
 	
 	SoundEngine_SetMasterVolume((Float32)vol);
 }
@@ -332,7 +332,7 @@ void ofxALSoundSetVolume(float vol){
 
 // internal ------------------------------------------------------------------------------------------------------------------
 
-bool ofxALSoundPlayer::update() {
+bool ofxOpenALSoundPlayer::update() {
 
 	for(int i=retainedBuffers.size()-1;i>=0;i--) {
 		if(SoundEngine_Update(retainedBuffers[i]->primedID, retainedBuffers[i]->buffer)) {
@@ -351,7 +351,7 @@ bool ofxALSoundPlayer::update() {
 
 //--------------------------------------------------------------
 
-bool ofxALSoundPlayer::prime() {
+bool ofxOpenALSoundPlayer::prime() {
 
 	soundPlayerLock.lock();
 	for(int i=0;i<soundPlayers.size();i++)
@@ -378,7 +378,7 @@ bool ofxALSoundPlayer::prime() {
 
 //--------------------------------------------------------------
 
-void ofxALSoundPlayer::loadBackgroundMusic(string fileName, bool queue, bool loadAtOnce) {
+void ofxOpenALSoundPlayer::loadBackgroundMusic(string fileName, bool queue, bool loadAtOnce) {
 	myId = 0;
 	
 	if(!mp3Loaded) {
@@ -405,7 +405,7 @@ void ofxALSoundPlayer::loadBackgroundMusic(string fileName, bool queue, bool loa
 
 //--------------------------------------------------------------
 
-void ofxALSoundPlayer::updateInternalsForNewPrime() {
+void ofxOpenALSoundPlayer::updateInternalsForNewPrime() {
 	setPitch(pitch);
 	setLocation(location.x, location.y, location.z);
 	setPan(pan);
@@ -415,25 +415,25 @@ void ofxALSoundPlayer::updateInternalsForNewPrime() {
 
 //--------------------------------------------------------------
 
-void ofxALSoundPlayer::unloadAllBackgroundMusic() {
+void ofxOpenALSoundPlayer::unloadAllBackgroundMusic() {
 	SoundEngine_UnloadBackgroundMusicTrack();
 }
 
 //--------------------------------------------------------------
 
-void ofxALSoundPlayer::startBackgroundMusic() {
+void ofxOpenALSoundPlayer::startBackgroundMusic() {
 	SoundEngine_StartBackgroundMusic();
 }
 
 //--------------------------------------------------------------
 
-void ofxALSoundPlayer::stopBackgroundMusic(bool stopNow) {
+void ofxOpenALSoundPlayer::stopBackgroundMusic(bool stopNow) {
 	SoundEngine_StopBackgroundMusic(!stopNow); //this is confusing but i think stopNow makes more sense than stopAtEnd in terms of how people will likely be calling this
 }
 
 //--------------------------------------------------------------
 
-void ofxALSoundPlayer::setBackgroundMusicVolume(float bgVol) {
+void ofxOpenALSoundPlayer::setBackgroundMusicVolume(float bgVol) {
 	SoundEngine_SetBackgroundMusicVolume((Float32)bgVol);
 }
 
@@ -443,13 +443,13 @@ void ofxALSoundPlayer::setBackgroundMusicVolume(float bgVol) {
 
 // beyond ofSoundPlayer ------------------------------------------------------------------------------------------------------
 
-void ofxALSoundPlayer::vibrate() { 
+void ofxOpenALSoundPlayer::vibrate() { 
 	SoundEngine_Vibrate();
 }
 
 //--------------------------------------------------------------
 
-void ofxALSoundPlayer::setLocation(float x, float y, float z) { 
+void ofxOpenALSoundPlayer::setLocation(float x, float y, float z) { 
 	if(iAmAnMp3)
 		cerr<<"error, cannot set location on mp3s in openAL"<<endl;
 	else
@@ -466,30 +466,30 @@ void ofxALSoundPlayer::setLocation(float x, float y, float z) {
 
 // beyond ofSoundPlayer static -----------------------------------------------------------------------------------------------
 
-void ofxALSoundPlayer::ofxALSoundSetListenerLocation(float x, float y, float z){	
+void ofxOpenALSoundPlayer::ofxALSoundSetListenerLocation(float x, float y, float z){	
 	SoundEngine_SetListenerPosition(x, y, z);
 }
 
 //--------------------------------------------------------------
-void ofxALSoundPlayer::ofxALSoundSetListenerVelocity(float x, float y, float z){
+void ofxOpenALSoundPlayer::ofxALSoundSetListenerVelocity(float x, float y, float z){
 	SoundEngine_SetListenerVelocity(x, y, z); //deprecated
 }
 
 //--------------------------------------------------------------
 
-void ofxALSoundPlayer::ofxALSoundSetListenerGain(float gain) {
+void ofxOpenALSoundPlayer::ofxALSoundSetListenerGain(float gain) {
 	SoundEngine_SetListenerGain(gain);
 }
 
 //--------------------------------------------------------------
 
-void ofxALSoundPlayer::ofxALSoundSetReferenceDistance(float dist) {
+void ofxOpenALSoundPlayer::ofxALSoundSetReferenceDistance(float dist) {
 	SoundEngine_SetReferenceDistance(dist);
 }
 
 //--------------------------------------------------------------
 
-void ofxALSoundPlayer::ofxALSoundSetMaxDistance(float dist) {
+void ofxOpenALSoundPlayer::ofxALSoundSetMaxDistance(float dist) {
 	SoundEngine_SetMaxDistance(dist);
 }
 
