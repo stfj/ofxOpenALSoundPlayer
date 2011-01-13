@@ -241,7 +241,7 @@ float ofxOpenALSoundPlayer::getPosition() {
 		cerr<<"error, cannot get position on mp3s in openAL"<<endl;
 	}
 	else
-		return SoundEngine_GetEffectPosition(myPrimedId);
+		return (float)SoundEngine_GetEffectPosition(myPrimedId)/length;
 	
 	return 0;
 }
@@ -251,7 +251,14 @@ float ofxOpenALSoundPlayer::getPosition() {
 bool ofxOpenALSoundPlayer::getIsPlaying() {
 	if(iAmAnMp3)
 		stopped = SoundEngine_getBackgroundMusicStopped();
-	return !stopped || !bPaused;
+	
+	if(!stopped) // if not stopped, run the update to see if maybe we should be...
+		update();
+	
+	if(stopped || bPaused)
+		return false;
+	else
+		return true;
 }
 
 //--------------------------------------------------------------
@@ -334,19 +341,22 @@ void ofxALSoundSetVolume(float vol){
 
 bool ofxOpenALSoundPlayer::update() {
 
+	bool deletedAnything= false;
 	for(int i=retainedBuffers.size()-1;i>=0;i--) {
 		if(SoundEngine_Update(retainedBuffers[i]->primedID, retainedBuffers[i]->buffer)) {
 			delete retainedBuffers[i];
 			retainedBuffers.erase(retainedBuffers.begin()+i);
-			stopped=true;
-			if(retainedBuffers.size()==0)
-				myPrimedId=-1;
-			
-			return true;
+			deletedAnything = true;
 		}
 	}
 	
-	return false;
+	if(retainedBuffers.size()==0)
+	{
+		myPrimedId=-1;
+		stopped=true;
+	}
+	
+	return deletedAnything;
 }
 
 //--------------------------------------------------------------
